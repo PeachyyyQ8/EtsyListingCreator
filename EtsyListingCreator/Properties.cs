@@ -1,6 +1,6 @@
 ﻿namespace EtsyListingCreator
 {
-    public class CommandLineArgs
+    public class Properties
     {
         public string WorkingDirectory { get; set; }
         public string OutputDirectory { get; set; }

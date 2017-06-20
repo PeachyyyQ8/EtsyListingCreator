@@ -5,10 +5,10 @@ namespace EtsyListingCreator
 {
     public class AppHelper
     {
-        public static CommandLineArgs ParseCommandLineArguments(string[] args)
+        public static Properties ParseCommandLineArguments(string[] args)
         {
 
-            var commandLineArgs = new CommandLineArgs();
+            var commandLineArgs = new Properties();
             var p = new OptionSet() {
                 { "wd|Working Directory=", "Sets or changes the directory of the base file.",
                     v => commandLineArgs.WorkingDirectory = v },

@@ -10,10 +10,7 @@ namespace EtsyListingCreator
     class Program
     {
         private static ILog _logger;
-
-        //[DllImport("Illustrator.Interop.dll"), STAThread]
-        //public static extern Application Application();
-
+        
         [STAThread]
         static void Main(string[] args)
         {
@@ -37,9 +34,18 @@ namespace EtsyListingCreator
                         Directory.CreateDirectory(properties.OutputDirectory);
                         dynamic document = application.Open(file,
                             AiDocumentColorSpace.aiDocumentRGBColor, null);
-                        SavePDF(baseFileName, properties.OutputDirectory, document);
-                        SaveJPEG(baseFileName, properties.OutputDirectory, document);
-                        SaveDXF(baseFileName, properties.OutputDirectory, document);
+                        //document.FitArtboardToSelectedArt();
+                        //SavePDF(baseFileName, properties.OutputDirectory, document);
+                        //SaveJPEG(baseFileName, properties.OutputDirectory, document);
+                        //SaveDXF(baseFileName, properties.OutputDirectory, document);
+                        //SavePNG(baseFileName, properties.OutputDirectory, document);
+                        //SaveEPS(baseFileName, properties.OutputDirectory, document);
+                        //document.Close();
+                        //document = application.Open(file,
+                        //    AiDocumentColorSpace.aiDocumentRGBColor, null);
+                        SaveWatermark(baseFileName, properties.OutputDirectory, document);
+
+
                     }
                 }
                 catch (Exception ex)
@@ -55,6 +61,38 @@ namespace EtsyListingCreator
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        private static void SaveWatermark(string baseFileName, string propertiesOutputDirectory, dynamic document)
+        {
+            
+            document.SelectObjectsOnActiveArtboard();
+            dynamic docSelection = document.selection;
+            if (docSelection.length > 0)
+            {
+                dynamic newGroup = document.groupItems.add();
+                for (var i = 0; i < docSelection.length; i++)
+                {
+                    docSelection[i].moveToBeginning(newGroup);
+                }
+            }
+
+        }
+
+        private static void SaveEPS(string baseFileName, string outputDirectory, dynamic document)
+        {
+            var fullFileName = outputDirectory + "\\" + baseFileName + ".eps";
+            document.SaveAs(fullFileName, new EPSSaveOptions());
+        }
+
+        private static void SavePNG(string baseFileName, string outputDirectory, dynamic document)
+        {
+            var fullFileName = outputDirectory + "\\" + baseFileName + ".png";
+            dynamic pngOptions = new ExportOptionsPNG24();
+            pngOptions.Transparency = true;
+            pngOptions.AntiAliasing = false;
+            pngOptions.SaveAsHTML = false;
+            document.Export(fullFileName, AiExportType.aiPNG24, pngOptions);
         }
 
         private static void SaveDXF(string baseFileName, string outputDirectory, dynamic document)
